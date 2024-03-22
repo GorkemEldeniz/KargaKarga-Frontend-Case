@@ -1,17 +1,12 @@
-import { cookies } from "next/headers";
+import { fetchClient } from "@/lib/fetch-instance";
 
 export default async function Home() {
-	let response = await fetch(`${process.env.API_URL}/auth/profile`, {
-		headers: {
-			Authorization: `${cookies().get("Authorization")?.value}`,
-		},
-	});
-
-	response = await response.json();
+	const response = await fetchClient("/api/auth/profile");
+	const user = await response.json();
 
 	return (
 		<main>
-			<pre>{JSON.stringify(response, null, 2)}</pre>
+			<h1>Welcome {user.data.email}</h1>
 		</main>
 	);
 }

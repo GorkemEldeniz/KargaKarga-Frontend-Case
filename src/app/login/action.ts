@@ -1,24 +1,19 @@
 "use server";
 
+import { fetchClient } from "@/lib/fetch-instance";
 import { action } from "@/lib/safe-action";
 import { formSchema } from "@/schema";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { LoginResponseType } from "./types";
 
 export const safeLoginAction = action(formSchema, async (data) => {
-	const apiUrl = process.env.API_URL;
-
-	const response = await fetch(`${apiUrl}/auth/login`, {
+	const response = await fetchClient("/api/auth/login", {
 		method: "POST",
-		headers: {
-			"Content-Type": "application/json",
-		},
 		body: JSON.stringify(data),
 	});
 
-	const user = (await response.json()) satisfies LoginResponseType;
-
+	const user = await response.json();
+	console.log(user);
 	if (response.status === 201) {
 		cookies().set({
 			name: "Authorization",

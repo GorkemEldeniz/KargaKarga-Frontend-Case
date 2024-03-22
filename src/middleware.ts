@@ -1,13 +1,15 @@
 import type { NextRequest } from "next/server";
+import { fetchClient } from "./lib/fetch-instance";
 
-export function middleware(request: NextRequest) {
-	const token = request.cookies.get("Authorization")?.value;
+export async function middleware(request: NextRequest) {
+	const response = await fetchClient("/api/auth/profile");
+	const user = await response.json();
 
-	if (!token && !request.nextUrl.pathname.startsWith("/login")) {
+	if (!user.status && !request.nextUrl.pathname.startsWith("/login")) {
 		return Response.redirect(new URL("/login", request.url));
 	}
 
-	if (token && request.nextUrl.pathname.startsWith("/login")) {
+	if (user?.status && request.nextUrl.pathname.startsWith("/login")) {
 		return Response.redirect(new URL("/", request.url));
 	}
 }
