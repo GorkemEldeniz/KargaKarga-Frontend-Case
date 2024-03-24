@@ -45,6 +45,12 @@ export default function Dashboard({ data }: { data: Board[] }) {
 			setTest(modifiedAr);
 			e.dataTransfer.clearData("task");
 		} else {
+			const draggedBoardName = draggedBoard.name;
+			const droppedBoardName = droppedBoard.name;
+
+			draggedBoard.name = droppedBoardName;
+			droppedBoard.name = draggedBoardName;
+
 			tempAr.splice(draggedBoardId - 1, 1, droppedBoard);
 			tempAr.splice(boardId - 1, 1, draggedBoard);
 
